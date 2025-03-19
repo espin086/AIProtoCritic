@@ -1,0 +1,29 @@
+name: Proto API Review Bot
+on:
+    pull_request:
+        types: [opened, synchronize] # Run on new PRs and when commits are pushed
+permissions:
+    contents: read # to read code (if needed, though checkout covers local access)
+    pull-requests: write # to write PR comments:contentReference[oaicite:16]{index=16}:contentReference [oaicite:17]{index=17}
+jobs:
+    review:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+              with:
+                fetch-depth: 0
+            - name: Setup Python
+              uses: actions/setup-python@v4
+              with:
+                python-version: '3.9'
+            - name: Set up Ollama
+              uses: pydantic/ollama-action@v3
+              with:
+                model: llama2
+            - name: Install dependencies
+              run: pip install PyPDF2 requests # PyMuPDF (fitz) for PDF reading, openai for API calls
+            - name: Run Proto Lint AI Review
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: python .github/ai_review_bot.py
