@@ -1,6 +1,7 @@
 """
-This is a script that will review a PR and provide feedback on the changes. 
+This is a script that will review a PR and provide feedback on the changes.
 """
+
 import os
 import requests
 import PyPDF2
@@ -44,7 +45,7 @@ def extract_guide_text(pdf_path):
                 raise ValueError("PDF file is empty")
             for page in reader.pages:
                 guide_text += page.extract_text()
-        
+
         if not guide_text.strip():
             raise ValueError("No text extracted from PDF")
         return guide_text
@@ -58,10 +59,11 @@ def analyze_proto_diff(diff, guide_text):
     """
     Analyze diff with llama2
     """
-    system_prompt = """You are an expert API design reviewer specialized in Protocol Buffers."""
+    system_prompt = (
+        """You are an expert API design reviewer specialized in Protocol Buffers."""
+    )
 
-
-    prompt=f"""Review the following Protocol Buffer changes and provide specific feedback in this exact format:
+    prompt = f"""Review the following Protocol Buffer changes and provide specific feedback in this exact format:
 
     # Protocol Buffer Review
 
@@ -104,7 +106,7 @@ def analyze_proto_diff(diff, guide_text):
 
     # Define the payload for the POST request
     payload = {
-        "model": "llama2",
+        "model": "llama3.3",
         "messages": messages,
         "stream": False,  # Set to True if you prefer streaming responses
     }
@@ -150,22 +152,22 @@ if __name__ == "__main__":
         exit(0)
 
     guide_text = extract_guide_text(".github/api_design_guide.pdf")
-    
+
     # Collect feedback for all files
     all_feedback = "# Protocol Buffer API Review\n\n"
-    
+
     for proto_file in proto_files:
         diff = subprocess.check_output(
             ["git", "diff", "origin/main", proto_file]
         ).decode()
-        
+
         # Add file separator and feedback
         file_feedback = analyze_proto_diff(diff, guide_text)
         all_feedback += f"\n---\n\n{file_feedback}\n"
-    
+
     # Add summary section
     all_feedback += "\n## Summary\nPlease address all ❌ issues and consider the 🟡 suggestions for better API design."
-    
+
     # Post combined feedback
     post_comment(repo, pr_number, all_feedback)
 

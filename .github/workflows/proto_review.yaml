@@ -20,7 +20,7 @@ jobs:
             - name: Set up Ollama
               uses: pydantic/ollama-action@v3
               with:
-                model: llama2
+                model: llama3.3
             - name: Install dependencies
               run: pip install PyPDF2 requests # PyMuPDF (fitz) for PDF reading, openai for API calls
             - name: Run Proto Lint AI Review
