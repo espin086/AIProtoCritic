@@ -106,7 +106,7 @@ def analyze_proto_diff(diff, guide_text):
 
     # Define the payload for the POST request
     payload = {
-        "model": "llama3.3",
+        "model": "llama3.1",
         "messages": messages,
         "stream": False,  # Set to True if you prefer streaming responses
     }
