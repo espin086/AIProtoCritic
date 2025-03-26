@@ -1,22 +1,22 @@
 syntax = "proto3";
 
-package google.example_service.v1;
+package com.google.example.service.v1;
 
 import "google/protobuf/timestamp.proto";
 
-service User_service {
-  rpc fetch_user_details(FetchUserDetailsRequest) returns (userDetails);
-  rpc RemoveUserAccount (RemoveUserAccountRequest) returns (Empty);
+service UserService {
+  rpc FetchUserDetails(FetchUserDetailsRequest) returns (UserDetails);
+  rpc RemoveUserAccount(RemoveUserAccountRequest) returns (Empty);
 }
 
 message FetchUserDetailsRequest {
-  string UserId = 1;
+  string userId = 1;
 }
 
-message userDetails {
-  string user_id = 1;
-  string full_Name = 2;
-  google.protobuf.Timestamp last_updated = 3;
+message UserDetails {
+  string userId = 1;
+  string fullName = 2;
+  google.protobuf.Timestamp lastUpdated = 3;
 }
 
 message RemoveUserAccountRequest {
