@@ -71,29 +71,30 @@ def analyze_proto_diff(diff, guide_text):
 
     ### Issues Found:
     - ❌ Line [number]: [Issue description]
-      * Violation: [Cite specific guideline text]
-      * Solution: [Proposed fix]
+    * Violation: [Cite specific guideline text]
+    * Solution: [Proposed fix]
 
     ### Suggestions:
     - 🟡 Line [number]: [Suggestion description]
-      * Reference: [Cite specific guideline text]
-      * Recommendation: [Proposed improvement]
+    * Reference: [Cite specific guideline text]
+    * Recommendation: [Proposed improvement]
 
     ### Good Practices:
     - ✅ Line [number]: [Description of good practice]
-      * Reason: [Why this is good]
+    * Reason: [Why this is good]
 
-    Guidelines to check against, you must use these guidelines to provide feedback:
+    Guidelines to check against — use **only** the design guidelines provided below to evaluate the changes:
     {guide_text}
 
-    Important:
-    - Every issue (❌) and suggestion (🟡) MUST cite specific guidelines
-    - Focus on API design best practices, naming conventions, and Proto3 standards ONLY using the design document provided.
-    - Provide specific line numbers for each comment and feedback you provide.
-    - Give actionable solutions for each issue
-    - DO NOT provide any other feedback, DO NOT provide every DIFF, just the feedback you have. 
-    - USE the EMOJIS to provide feedback, they are important in the formatting and styling of the feedback.
-    - USE the ONLY the guidelines provided to you to provide feedback. 
+    Important instructions:
+    - Every issue (❌) and suggestion (🟡) **must** cite specific guideline text from the document.
+    - Focus **only** on API design best practices, naming conventions, and Proto3 standards from the guide.
+    - Provide **specific line numbers** for each piece of feedback.
+    - Provide **actionable** and concise fixes or recommendations.
+    - **Do not** summarize the diff or provide any code outside the feedback format.
+    - Use the provided EMOJIS (❌ 🟡 ✅) exactly as shown — formatting is critical.
+    - Review **only** what has changed in the diff. Do **not** review the entire file.
+    - **DO NOT** include any commentary or explanation outside the required feedback format.
 
     Here is the diff:
     {diff}
