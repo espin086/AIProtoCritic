@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package com.google.example.service.v1;
+
+import "google/protobuf/timestamp.proto";
+
+service UserManagementService {
+  rpc FetchUserDetails(GetUserDetailsRequest) returns (UserDetails);
+  rpc RemoveUserAccount(DeleteUserAccountRequest) returns (VoidResult);
+}
+
+message GetUserDetailsRequest {
+  string userId = 1;
+}
+
+message UserDetails {
+  string userId = 1;
+  string fullName = 2;
+  google.protobuf.Timestamp lastUpdateTime = 3;
+}
+
+message DeleteUserAccountRequest {
+  string accountId = 1;
+}
+
+message VoidResult {}

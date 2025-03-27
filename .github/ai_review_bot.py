@@ -1,6 +1,7 @@
 """
-This is a script that will review a PR and provide feedback on the changes. 
+This is a script that will review a PR and provide feedback on the changes.
 """
+
 import os
 import requests
 import PyPDF2
@@ -44,7 +45,7 @@ def extract_guide_text(pdf_path):
                 raise ValueError("PDF file is empty")
             for page in reader.pages:
                 guide_text += page.extract_text()
-        
+
         if not guide_text.strip():
             raise ValueError("No text extracted from PDF")
         return guide_text
@@ -58,10 +59,11 @@ def analyze_proto_diff(diff, guide_text):
     """
     Analyze diff with llama2
     """
-    system_prompt = """You are an expert API design reviewer specialized in Protocol Buffers."""
+    system_prompt = (
+        """You are an expert API design reviewer specialized in Protocol Buffers."""
+    )
 
-
-    prompt=f"""Review the following Protocol Buffer changes and provide specific feedback in this exact format:
+    prompt = f"""Review the following Protocol Buffer changes and provide specific feedback in this exact format:
 
     # Protocol Buffer Review
 
@@ -81,17 +83,20 @@ def analyze_proto_diff(diff, guide_text):
     - ✅ Line [number]: [Description of good practice]
       * Reason: [Why this is good]
 
-    Guidelines to check against, you must use these guidelines to provide feedback:
+    Guidelines to check against, you must use only these guidelines to provide feedback:
     {guide_text}
 
-    Important:
-    - Every issue (❌) and suggestion (🟡) MUST cite specific guidelines
+    Important Instructions:
+    - Every issue (❌) and suggestion (🟡) MUST cite specific guidelines text from the document.
     - Focus on API design best practices, naming conventions, and Proto3 standards ONLY using the design document provided.
     - Provide specific line numbers for each comment and feedback you provide.
-    - Give actionable solutions for each issue
+    - Give actionable and concise solutions or recommendations for each issue.
     - DO NOT provide any other feedback, DO NOT provide every DIFF, just the feedback you have. 
-    - USE the EMOJIS to provide feedback, they are important in the formatting and styling of the feedback.
+    - Use the provided EMOJIS (❌ 🟡 ✅) exactly as shown — formatting is critical.
     - USE the ONLY the guidelines provided to you to provide feedback. 
+    - DO NOT provide any refrence links.
+    - For the issues, Suggestions and good practices use same exct format as mentioned above.
+
 
     Here is the diff:
     {diff}
@@ -104,7 +109,7 @@ def analyze_proto_diff(diff, guide_text):
 
     # Define the payload for the POST request
     payload = {
-        "model": "llama2",
+        "model": "llama3.1",
         "messages": messages,
         "stream": False,  # Set to True if you prefer streaming responses
     }
@@ -150,22 +155,22 @@ if __name__ == "__main__":
         exit(0)
 
     guide_text = extract_guide_text(".github/api_design_guide.pdf")
-    
+
     # Collect feedback for all files
     all_feedback = "# Protocol Buffer API Review\n\n"
-    
+
     for proto_file in proto_files:
         diff = subprocess.check_output(
             ["git", "diff", "origin/main", proto_file]
         ).decode()
-        
+
         # Add file separator and feedback
         file_feedback = analyze_proto_diff(diff, guide_text)
         all_feedback += f"\n---\n\n{file_feedback}\n"
-    
+
     # Add summary section
     all_feedback += "\n## Summary\nPlease address all ❌ issues and consider the 🟡 suggestions for better API design."
-    
+
     # Post combined feedback
     post_comment(repo, pr_number, all_feedback)
 
